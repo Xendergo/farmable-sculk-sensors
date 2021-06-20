@@ -1,9 +1,9 @@
-# Fabric Example Mod
+# Farmable Sculk Sensors
 
-## Setup
+In the latest 1.17 version, sculk sensors are creative only, which is kind of a shame since they're such cool blocks, so this mod lets you collect and farm them in survival
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+## Getting your first sensor
+Sculk sensors generate sporadically underground, you'd probably find a few just by caving & and exploring mineshafts.
 
-## License
-
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+## Getting more
+Feeding a sculk sensor to a sheep infects the sheep with sculk fungus, which means the sheep will explode in 5 seconds into 1 to 3 sculk sensors.

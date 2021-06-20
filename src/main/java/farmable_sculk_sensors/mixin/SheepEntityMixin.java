@@ -78,7 +78,7 @@ public abstract class SheepEntityMixin extends MobEntity {
 			this.world.createExplosion(this, this.getX(), this.getY(), this.getZ(), 3, destructionType);
 			this.discard();
 
-			int amt = random.nextInt(2) + 1;
+			int amt = random.nextInt(3) + 1;
 			for (int i = 0; i < amt; i++) {
 				ItemEntity item = new ItemEntity(world, getX(), getY(), getZ(), new ItemStack(Items.SCULK_SENSOR));
 

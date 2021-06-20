@@ -4,7 +4,8 @@
   "package": "farmable_sculk_sensors.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "SheepEntityMixin"
+    "SheepEntityMixin",
+    "DispenserBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

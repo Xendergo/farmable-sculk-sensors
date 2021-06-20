@@ -7,3 +7,6 @@ Sculk sensors generate sporadically underground, you'd probably find a few just 
 
 ## Getting more
 Feeding a sculk sensor to a sheep infects the sheep with sculk fungus, which means the sheep will explode in 5 seconds into 1 to 3 sculk sensors.
+
+## Automation
+You can use dispensers to feed sheep the sculk sensors. Combined with `carpet extra`'s `dispenserPlacesBlocks` & `dispensersFeedAnimals`, you could make a fully automatic farm

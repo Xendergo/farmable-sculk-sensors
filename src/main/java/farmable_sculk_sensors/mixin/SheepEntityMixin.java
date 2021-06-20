@@ -8,6 +8,7 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -22,22 +23,45 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import farmable_sculk_sensors.fakes.SheepEntityInterface;
+
 @Mixin(SheepEntity.class)
-public abstract class SheepEntityMixin extends MobEntity {
+public abstract class SheepEntityMixin extends MobEntity implements SheepEntityInterface {
 	protected SheepEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
 		super(entityType, world);
 	}
 
 	private int fuse = -1;
 
+	public int getFuse() {
+		return fuse;
+	}
+
+	@Inject(
+		at = @At("HEAD"),
+		method = "writeCustomDataToNbt"
+	)
+	private void writeCustomDataToNbt(NbtCompound tag, CallbackInfo info) {
+		tag.putInt("fuse", fuse);
+	}
+
+	@Inject(
+		at = @At("HEAD"),
+		method = "readCustomDataFromNbt"
+	)
+	private void readCustomDataFromNbt(NbtCompound tag, CallbackInfo info) {
+		fuse = tag.getInt("fuse");
+	}
+
 	@Inject(
 		at = @At("HEAD"),
 		method = "mobTick"
 	)
 	private void mobTick(CallbackInfo info) {
-		if (fuse == 0) {
+		// If the fuse tag doesn't exist, it'll be zero by default, so the baseline can't be zero
+		if (fuse == 1) {
 			explode();
-		} else if (fuse > 0) {
+		} else if (fuse > 1) {
 			fuse--;
 		}
 	}
@@ -48,11 +72,11 @@ public abstract class SheepEntityMixin extends MobEntity {
 		cancellable = true
 	)
 	private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		ItemStack itemStack = player.getStackInHand(hand);
+		ItemStack sensors = player.getStackInHand(hand);
 
-		setAttacker(player);
+		if (sensors.isOf(Items.SCULK_SENSOR)) {
+			setAttacker(player);
 
-		if (itemStack.isOf(Items.SCULK_SENSOR)) {
 			for (var goal : goalSelector.getGoals()) {
 				if (goal.getGoal() instanceof EscapeDangerGoal) {
 					goal.start();
@@ -60,13 +84,16 @@ public abstract class SheepEntityMixin extends MobEntity {
 				}
 			}
 
-			itemStack.decrement(1);
+			feedSheepSculk(sensors);
 
 			info.setReturnValue(ActionResult.SUCCESS);
 			info.cancel();
 		}
+	}
 
-		fuse = 100;
+	public void feedSheepSculk(ItemStack sensors) {
+		sensors.decrement(1);
+		fuse = 101;
 	}
 
 	private void explode() {
